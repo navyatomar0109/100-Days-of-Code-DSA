@@ -1,4 +1,6 @@
 solve problem-
+#include <stdio.h>
+
 int fib(int n) {
     if (n <= 1)
         return n;
@@ -13,6 +15,16 @@ int fib(int n) {
 
     return b;
 }
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    printf("%d", fib(n));
+
+    return 0;
+}
+
 view problem-#include <stdio.h>
 
 // Recursive function

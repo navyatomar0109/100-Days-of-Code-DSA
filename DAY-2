@@ -21,6 +21,13 @@ int maxProfit(int prices[], int n) {
 
 int main() {
     int prices[] = {7, 1, 5, 3, 6, 4};
+    int n = sizeof(prices) / sizeof(prices[0]);
+
+    printf("Maximum Profit = %d", maxProfit(prices, n));
+
+    return 0;
+}
+
 view problem-
 #include <stdio.h>
 

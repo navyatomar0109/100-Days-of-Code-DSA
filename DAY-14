@@ -1,0 +1,90 @@
+view problem-
+#include <stdio.h>
+
+int main() {
+    int m, n;
+    scanf("%d %d", &m, &n);
+
+    int matrix[m][n];
+
+    // Input matrix
+    for(int i = 0; i < m; i++)
+        for(int j = 0; j < n; j++)
+            scanf("%d", &matrix[i][j]);
+
+    int top = 0, bottom = m - 1;
+    int left = 0, right = n - 1;
+
+    while(top <= bottom && left <= right) {
+
+        // 1. Left → Right
+        for(int j = left; j <= right; j++)
+            printf("%d ", matrix[top][j]);
+        top++;
+
+        // 2. Top → Bottom
+        for(int i = top; i <= bottom; i++)
+            printf("%d ", matrix[i][right]);
+        right--;
+
+        // 3. Right → Left
+        if(top <= bottom) {
+            for(int j = right; j >= left; j--)
+                printf("%d ", matrix[bottom][j]);
+            bottom--;
+        }
+
+        // 4. Bottom → Top
+        if(left <= right) {
+            for(int i = bottom; i >= top; i--)
+                printf("%d ", matrix[i][left]);
+            left++;
+        }
+    }
+
+    return 0;
+}
+solve problem-
+#include <stdio.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int A[n][n];
+
+    // Input matrix
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
+            scanf("%d", &A[i][j]);
+
+    // STEP 1: Transpose
+    for(int i = 0; i < n; i++) {
+        for(int j = i + 1; j < n; j++) {
+            int temp = A[i][j];
+            A[i][j] = A[j][i];
+            A[j][i] = temp;
+        }
+    }
+
+    // STEP 2: Reverse each row
+    for(int i = 0; i < n; i++) {
+        int left = 0, right = n - 1;
+        while(left < right) {
+            int temp = A[i][left];
+            A[i][left] = A[i][right];
+            A[i][right] = temp;
+            left++;
+            right--;
+        }
+    }
+
+    // Print rotated matrix
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++)
+            printf("%d ", A[i][j]);
+        printf("\n");
+    }
+
+    return 0;
+}

@@ -1,0 +1,55 @@
+view problem:
+#include <stdio.h>
+
+int main() {
+    int n, k;
+
+    // Input size
+    scanf("%d", &n);
+
+    int arr[n];
+
+    // Input array
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    // Input rotation count
+    scanf("%d", &k);
+
+    k = k % n;  // handle large k
+
+    // Print rotated array
+    for(int i = n - k; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    for(int i = 0; i < n - k; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    return 0;
+}
+show problem:
+int* productExceptSelf(int* nums, int numsSize, int* returnSize) {
+    
+    *returnSize = numsSize;
+    
+    // Allocate result array
+    int* answer = (int*)malloc(numsSize * sizeof(int));
+    
+    // Step 1: Prefix products
+    answer[0] = 1;
+    for (int i = 1; i < numsSize; i++) {
+        answer[i] = answer[i - 1] * nums[i - 1];
+    }
+    
+    // Step 2: Suffix products
+    int suffix = 1;
+    for (int i = numsSize - 1; i >= 0; i--) {
+        answer[i] *= suffix;
+        suffix *= nums[i];
+    }
+    
+    return answer;
+}

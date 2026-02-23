@@ -1,12 +1,6 @@
 view problem:
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
-
-// Function for qsort
-int compare(const void *a, const void *b) {
-    return (*(int*)a - *(int*)b);
-}
 
 int main() {
     int n;
@@ -17,30 +11,23 @@ int main() {
         scanf("%d", &arr[i]);
     }
 
-    // Step 1: Sort array
-    qsort(arr, n, sizeof(int), compare);
+    int minSum = 1000000;
+    int a, b;
 
-    int left = 0, right = n - 1;
-    int minSum = INT_MAX;
-    int num1, num2;
+    // Check all pairs
+    for(int i = 0; i < n - 1; i++) {
+        for(int j = i + 1; j < n; j++) {
+            int sum = arr[i] + arr[j];
 
-    // Step 2: Two pointer search
-    while(left < right) {
-        int sum = arr[left] + arr[right];
-
-        if(abs(sum) < abs(minSum)) {
-            minSum = sum;
-            num1 = arr[left];
-            num2 = arr[right];
+            if(abs(sum) < abs(minSum)) {
+                minSum = sum;
+                a = arr[i];
+                b = arr[j];
+            }
         }
-
-        if(sum < 0)
-            left++;
-        else
-            right--;
     }
 
-    printf("%d %d", num1, num2);
+    printf("%d %d", a, b);
 
     return 0;
 }

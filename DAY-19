@@ -1,4 +1,4 @@
-view problem:
+1.view problem:
 #include <stdio.h>
 #include <stdlib.h>
 

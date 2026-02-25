@@ -1,0 +1,177 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert at end
+void insertEnd(struct Node** head, int value) {
+    struct Node* newNode = createNode(value);
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+
+// Merge two sorted lists
+struct Node* mergeLists(struct Node* l1, struct Node* l2) {
+    struct Node dummy;          // temporary start node
+    struct Node* tail = &dummy;
+    dummy.next = NULL;
+
+    while (l1 != NULL && l2 != NULL) {
+        if (l1->data <= l2->data) {
+            tail->next = l1;
+            l1 = l1->next;
+        } else {
+            tail->next = l2;
+            l2 = l2->next;
+        }
+        tail = tail->next;
+    }
+
+    // Attach remaining nodes
+    if (l1 != NULL)
+        tail->next = l1;
+    else
+        tail->next = l2;
+
+    return dummy.next;
+}
+
+// Print list
+void printList(struct Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+}
+
+int main() {
+    int n, m, x;
+    struct Node *list1 = NULL, *list2 = NULL;
+
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &x);
+        insertEnd(&list1, x);
+    }
+
+    scanf("%d", &m);
+    for (int i = 0; i < m; i++) {
+        scanf("%d", &x);
+        insertEnd(&list2, x);
+    }
+
+    struct Node* merged = mergeLists(list1, list2);
+    printList(merged);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create node
+struct Node* createNode(int val) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert at end
+void insertEnd(struct Node** head, int val) {
+    struct Node* newNode = createNode(val);
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+
+// Function to create cycle (for testing using pos)
+void createCycle(struct Node* head, int pos) {
+    if (pos == -1) return;
+
+    struct Node *tail = head, *join = NULL;
+    int index = 0;
+
+    while (tail->next != NULL) {
+        if (index == pos)
+            join = tail;
+        tail = tail->next;
+        index++;
+    }
+
+    if (join != NULL)
+        tail->next = join;
+}
+
+// Detect cycle
+int hasCycle(struct Node* head) {
+    struct Node *slow = head, *fast = head;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast)
+            return 1; // Cycle exists
+    }
+
+    return 0; // No cycle
+}
+
+int main() {
+    int n, x, pos;
+    struct Node* head = NULL;
+
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &x);
+        insertEnd(&head, x);
+    }
+
+    scanf("%d", &pos); // position to create cycle (-1 if none)
+
+    createCycle(head, pos);
+
+    if (hasCycle(head))
+        printf("true");
+    else
+        printf("false");
+
+    return 0;
+}

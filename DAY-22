@@ -1,0 +1,135 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure of node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert at end
+void insertEnd(struct Node** head, int value) {
+    struct Node* newNode = createNode(value);
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+
+// Count nodes
+int countNodes(struct Node* head) {
+    int count = 0;
+    struct Node* temp = head;
+
+    while (temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+
+    return count;
+}
+
+int main() {
+    int n, value;
+    struct Node* head = NULL;
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &value);
+        insertEnd(&head, value);
+    }
+
+    int total = countNodes(head);
+    printf("%d", total);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create node
+struct Node* createNode(int val) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert at end
+void insertEnd(struct Node** head, int val) {
+    struct Node* newNode = createNode(val);
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+
+// Reverse linked list
+struct Node* reverseList(struct Node* head) {
+    struct Node *prev = NULL, *curr = head, *next = NULL;
+
+    while (curr != NULL) {
+        next = curr->next;   // store next
+        curr->next = prev;   // reverse link
+        prev = curr;         // move prev
+        curr = next;         // move curr
+    }
+
+    return prev; // new head
+}
+
+// Print list
+void printList(struct Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+}
+
+int main() {
+    int n, x;
+    struct Node* head = NULL;
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &x);
+        insertEnd(&head, x);
+    }
+
+    head = reverseList(head);
+    printList(head);
+
+    return 0;
+}

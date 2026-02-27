@@ -1,0 +1,95 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert at end
+struct Node* insertEnd(struct Node* head, int value) {
+    struct Node* newNode = createNode(value);
+
+    if (head == NULL)
+        return newNode;
+
+    struct Node* temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+    return head;
+}
+
+// Count occurrences
+int countKey(struct Node* head, int key) {
+    int count = 0;
+    struct Node* temp = head;
+
+    while (temp != NULL) {
+        if (temp->data == key)
+            count++;
+        temp = temp->next;
+    }
+
+    return count;
+}
+
+int main() {
+    int n, value, key;
+    struct Node* head = NULL;
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &value);
+        head = insertEnd(head, value);
+    }
+
+    scanf("%d", &key);
+
+    printf("%d", countKey(head, key));
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to detect cycle start
+struct Node* detectCycle(struct Node* head) {
+    struct Node *slow = head, *fast = head;
+
+    // Step 1: Detect cycle
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast) {
+            // Step 2: Find start of cycle
+            slow = head;
+            while (slow != fast) {
+                slow = slow->next;
+                fast = fast->next;
+            }
+            return slow; // cycle start
+        }
+    }
+
+    return NULL; // no cycle
+}

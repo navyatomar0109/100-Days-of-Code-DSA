@@ -7,54 +7,6 @@ struct Node {
     struct Node* next;
 };
 
-int main() {
-    int n, i, value;
-    struct Node *head = NULL, *temp, *newNode, *last;
-
-    scanf("%d", &n);
-
-    if(n <= 0)
-        return 0;
-
-    // Create first node
-    scanf("%d", &value);
-    head = (struct Node*)malloc(sizeof(struct Node));
-    head->data = value;
-    head->next = NULL;
-    last = head;
-
-    // Create remaining nodes
-    for(i = 1; i < n; i++) {
-        scanf("%d", &value);
-        newNode = (struct Node*)malloc(sizeof(struct Node));
-        newNode->data = value;
-        newNode->next = NULL;
-
-        last->next = newNode;
-        last = newNode;
-    }
-
-    // Make circular
-    last->next = head;
-
-    // Traverse circular linked list
-    temp = head;
-    do {
-        printf("%d ", temp->data);
-        temp = temp->next;
-    } while(temp != head);
-
-    return 0;
-}
-solve problem:
-#include <stdio.h>
-#include <stdlib.h>
-
-struct Node {
-    int data;
-    struct Node* next;
-};
-
 struct Node* createNode(int value) {
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     newNode->data = value;
@@ -122,6 +74,81 @@ int main() {
         printf("%d ", temp->data);
         temp = temp->next;
     }
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node{
+    int data;
+    struct Node* next;
+};
+
+struct Node* createNode(int val){
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+struct Node* addTwoNumbers(struct Node* l1, struct Node* l2){
+
+    struct Node *head = NULL, *tail = NULL;
+    int carry = 0;
+
+    while(l1 != NULL || l2 != NULL || carry != 0){
+
+        int sum = carry;
+
+        if(l1 != NULL){
+            sum += l1->data;
+            l1 = l1->next;
+        }
+
+        if(l2 != NULL){
+            sum += l2->data;
+            l2 = l2->next;
+        }
+
+        struct Node* newNode = createNode(sum % 10);
+        carry = sum / 10;
+
+        if(head == NULL){
+            head = tail = newNode;
+        }
+        else{
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    return head;
+}
+
+void printList(struct Node* head){
+    while(head != NULL){
+        printf("%d ", head->data);
+        head = head->next;
+    }
+}
+
+int main(){
+
+    // Example: [2,4,3] + [5,6,4]
+
+    struct Node* l1 = createNode(2);
+    l1->next = createNode(4);
+    l1->next->next = createNode(3);
+
+    struct Node* l2 = createNode(5);
+    l2->next = createNode(6);
+    l2->next->next = createNode(4);
+
+    struct Node* result = addTwoNumbers(l1,l2);
+
+    printList(result);
 
     return 0;
 }

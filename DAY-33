@@ -1,0 +1,131 @@
+view problem:
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+void push(char x) {
+    stack[++top] = x;
+}
+
+char pop() {
+    return stack[top--];
+}
+
+int precedence(char op) {
+    if(op == '+' || op == '-')
+        return 1;
+    if(op == '*' || op == '/')
+        return 2;
+    return 0;
+}
+
+int main() {
+
+    char infix[100], postfix[100];
+    int k = 0;
+
+    scanf("%s", infix);
+
+    for(int i = 0; i < strlen(infix); i++) {
+
+        char ch = infix[i];
+
+        // Operand
+        if(isalnum(ch)) {
+            postfix[k++] = ch;
+        }
+
+        // Opening bracket
+        else if(ch == '(') {
+            push(ch);
+        }
+
+        // Closing bracket
+        else if(ch == ')') {
+            while(stack[top] != '(')
+                postfix[k++] = pop();
+            pop(); // remove '('
+        }
+
+        // Operator
+        else {
+            while(top != -1 && precedence(stack[top]) >= precedence(ch))
+                postfix[k++] = pop();
+            push(ch);
+        }
+    }
+
+    // Pop remaining operators
+    while(top != -1)
+        postfix[k++] = pop();
+
+    postfix[k] = '\0';
+
+    printf("%s", postfix);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 10000
+
+int stack[MAX];
+int top = -1;
+
+void push(int val){
+    stack[++top] = val;
+}
+
+int pop(){
+    return stack[top--];
+}
+
+int evalRPN(char* tokens[], int n){
+
+    for(int i = 0; i < n; i++){
+
+        if(strcmp(tokens[i], "+") == 0){
+            int b = pop();
+            int a = pop();
+            push(a + b);
+        }
+        else if(strcmp(tokens[i], "-") == 0){
+            int b = pop();
+            int a = pop();
+            push(a - b);
+        }
+        else if(strcmp(tokens[i], "*") == 0){
+            int b = pop();
+            int a = pop();
+            push(a * b);
+        }
+        else if(strcmp(tokens[i], "/") == 0){
+            int b = pop();
+            int a = pop();
+            push(a / b);
+        }
+        else{
+            push(atoi(tokens[i]));
+        }
+    }
+
+    return pop();
+}
+
+int main(){
+
+    char* tokens[] = {"2","1","+","3","*"};
+    int n = 5;
+
+    printf("%d", evalRPN(tokens, n));
+
+    return 0;
+}

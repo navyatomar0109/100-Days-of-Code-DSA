@@ -1,0 +1,127 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+int main() {
+    int n, i, value;
+    struct Node *head = NULL, *temp, *newNode, *last;
+
+    scanf("%d", &n);
+
+    if(n <= 0)
+        return 0;
+
+    // Create first node
+    scanf("%d", &value);
+    head = (struct Node*)malloc(sizeof(struct Node));
+    head->data = value;
+    head->next = NULL;
+    last = head;
+
+    // Create remaining nodes
+    for(i = 1; i < n; i++) {
+        scanf("%d", &value);
+        newNode = (struct Node*)malloc(sizeof(struct Node));
+        newNode->data = value;
+        newNode->next = NULL;
+
+        last->next = newNode;
+        last = newNode;
+    }
+
+    // Make circular
+    last->next = head;
+
+    // Traverse circular linked list
+    temp = head;
+    do {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    } while(temp != head);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+int main() {
+    int n, k, val, i;
+    struct Node *head = NULL, *temp = NULL, *last = NULL;
+
+    scanf("%d", &n);
+
+    // Create linked list
+    for(i = 0; i < n; i++) {
+        scanf("%d", &val);
+        struct Node* newNode = createNode(val);
+
+        if(head == NULL) {
+            head = newNode;
+            temp = head;
+        } else {
+            temp->next = newNode;
+            temp = newNode;
+        }
+    }
+
+    scanf("%d", &k);
+
+    // Find last node and length
+    last = head;
+    int length = 1;
+    while(last->next != NULL) {
+        last = last->next;
+        length++;
+    }
+
+    k = k % length;
+
+    if(k == 0) {
+        temp = head;
+        while(temp != NULL) {
+            printf("%d ", temp->data);
+            temp = temp->next;
+        }
+        return 0;
+    }
+
+    // Make circular
+    last->next = head;
+
+    int steps = length - k;
+    temp = head;
+
+    for(i = 1; i < steps; i++)
+        temp = temp->next;
+
+    // New head
+    head = temp->next;
+    temp->next = NULL;
+
+    // Print rotated list
+    temp = head;
+    while(temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+
+    return 0;
+}

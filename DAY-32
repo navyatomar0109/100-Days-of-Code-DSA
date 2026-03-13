@@ -1,0 +1,109 @@
+view probelm:
+#include <stdio.h>
+
+#define MAX 100
+
+int stack[MAX];
+int top = -1;
+
+void push(int value) {
+    if(top == MAX-1) {
+        printf("Stack Overflow\n");
+        return;
+    }
+    stack[++top] = value;
+}
+
+void pop() {
+    if(top == -1) {
+        printf("Stack Underflow\n");
+        return;
+    }
+    top--;
+}
+
+int main() {
+
+    int n, m, value;
+
+    scanf("%d", &n);
+
+    // Push elements
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &value);
+        push(value);
+    }
+
+    // Number of pops
+    scanf("%d", &m);
+
+    for(int i = 0; i < m; i++) {
+        pop();
+    }
+
+    // Display remaining stack (top → bottom)
+    for(int i = top; i >= 0; i--) {
+        printf("%d ", stack[i]);
+    }
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 30000
+
+typedef struct {
+    int stack[MAX];
+    int minStack[MAX];
+    int top;
+    int minTop;
+} MinStack;
+
+void init(MinStack* obj) {
+    obj->top = -1;
+    obj->minTop = -1;
+}
+
+void push(MinStack* obj, int val) {
+    obj->stack[++obj->top] = val;
+
+    if(obj->minTop == -1 || val <= obj->minStack[obj->minTop]) {
+        obj->minStack[++obj->minTop] = val;
+    }
+}
+
+void pop(MinStack* obj) {
+    if(obj->stack[obj->top] == obj->minStack[obj->minTop]) {
+        obj->minTop--;
+    }
+    obj->top--;
+}
+
+int top(MinStack* obj) {
+    return obj->stack[obj->top];
+}
+
+int getMin(MinStack* obj) {
+    return obj->minStack[obj->minTop];
+}
+
+int main() {
+
+    MinStack s;
+    init(&s);
+
+    push(&s, -2);
+    push(&s, 0);
+    push(&s, -3);
+
+    printf("%d\n", getMin(&s)); // -3
+
+    pop(&s);
+
+    printf("%d\n", top(&s));    // 0
+    printf("%d\n", getMin(&s)); // -2
+
+    return 0;
+}

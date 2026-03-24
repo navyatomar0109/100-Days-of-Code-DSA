@@ -1,0 +1,149 @@
+view problem:
+#include <stdio.h>
+
+#define MAX 100
+
+int heap[MAX];
+int size = 0;
+
+// Swap function
+void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+// Heapify Up
+void heapifyUp(int i) {
+    while (i > 0 && heap[(i - 1) / 2] > heap[i]) {
+        swap(&heap[i], &heap[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+// Heapify Down
+void heapifyDown(int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < size && heap[left] < heap[smallest])
+        smallest = left;
+
+    if (right < size && heap[right] < heap[smallest])
+        smallest = right;
+
+    if (smallest != i) {
+        swap(&heap[i], &heap[smallest]);
+        heapifyDown(smallest);
+    }
+}
+
+// Insert
+void insert(int x) {
+    if (size == MAX) return;
+
+    heap[size] = x;
+    heapifyUp(size);
+    size++;
+}
+
+// Extract Min
+int extractMin() {
+    if (size == 0) return -1;
+
+    int min = heap[0];
+    heap[0] = heap[size - 1];
+    size--;
+    heapifyDown(0);
+
+    return min;
+}
+
+// Peek
+int peek() {
+    if (size == 0) return -1;
+    return heap[0];
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    while (n--) {
+        char op[20];
+        scanf("%s", op);
+
+        if (strcmp(op, "insert") == 0) {
+            int x;
+            scanf("%d", &x);
+            insert(x);
+        }
+        else if (strcmp(op, "extractMin") == 0) {
+            printf("%d\n", extractMin());
+        }
+        else if (strcmp(op, "peek") == 0) {
+            printf("%d\n", peek());
+        }
+    }
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100001
+
+typedef struct Node {
+    int val;
+    struct Node* next;
+} Node;
+
+// Add node to bucket
+void add(Node** bucket, int val) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->val = val;
+    newNode->next = *bucket;
+    *bucket = newNode;
+}
+
+void topKFrequent(int nums[], int n, int k) {
+    int freq[MAX] = {0};
+
+    // Step 1: Count frequency
+    for (int i = 0; i < n; i++) {
+        freq[nums[i] + 10000]++;  // shift for negative values
+    }
+
+    // Step 2: Create buckets
+    Node* bucket[n + 1];
+    for (int i = 0; i <= n; i++) bucket[i] = NULL;
+
+    // Step 3: Fill buckets
+    for (int i = 0; i < MAX; i++) {
+        if (freq[i] > 0) {
+            add(&bucket[freq[i]], i - 10000);
+        }
+    }
+
+    // Step 4: Collect top k
+    int count = 0;
+    for (int i = n; i >= 0 && count < k; i--) {
+        Node* temp = bucket[i];
+        while (temp && count < k) {
+            printf("%d ", temp->val);
+            temp = temp->next;
+            count++;
+        }
+    }
+}
+
+int main() {
+    int nums[] = {1,1,1,2,2,3};
+    int n = 6, k = 2;
+
+    topKFrequent(nums, n, k);
+
+    return 0;
+}

@@ -1,0 +1,101 @@
+view problem:
+#include <stdio.h>
+
+// Swap function
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Heapify (Max Heap)
+void heapify(int arr[], int n, int i) {
+    int largest = i;
+    int left = 2*i + 1;
+    int right = 2*i + 2;
+
+    // Check left child
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    // Check right child
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    // If root is not largest
+    if (largest != i) {
+        swap(&arr[i], &arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+
+// Heap Sort
+void heapSort(int arr[], int n) {
+
+    // Step 1: Build Max Heap
+    for (int i = n/2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    // Step 2: Extract elements
+    for (int i = n - 1; i > 0; i--) {
+        swap(&arr[0], &arr[i]);  // move max to end
+        heapify(arr, i, 0);      // heapify reduced heap
+    }
+}
+
+// Print array
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+}
+
+int main() {
+    int arr[] = {4, 10, 3, 5, 1};
+    int n = 5;
+
+    heapSort(arr, n);
+
+    printArray(arr, n);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+
+#define MAX 100000
+
+void dailyTemperatures(int temp[], int n) {
+    int stack[MAX];   // stores indices
+    int top = -1;
+
+    int ans[MAX];
+
+    // Initialize answer with 0
+    for (int i = 0; i < n; i++)
+        ans[i] = 0;
+
+    for (int i = 0; i < n; i++) {
+
+        // Resolve previous colder days
+        while (top != -1 && temp[i] > temp[stack[top]]) {
+            int idx = stack[top--];
+            ans[idx] = i - idx;
+        }
+
+        // Push current index
+        stack[++top] = i;
+    }
+
+    // Print result
+    for (int i = 0; i < n; i++)
+        printf("%d ", ans[i]);
+}
+
+int main() {
+    int temp[] = {73,74,75,71,69,72,76,73};
+    int n = 8;
+
+    dailyTemperatures(temp, n);
+
+    return 0;
+}

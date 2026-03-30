@@ -1,0 +1,94 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to find days until a warmer temperature
+int* dailyTemperatures(int* temperatures, int temperaturesSize, int* returnSize) {
+    int* answer = (int*)calloc(temperaturesSize, sizeof(int)); // initialize with 0
+    int* stack = (int*)malloc(temperaturesSize * sizeof(int)); // stack to store indices
+    int top = -1;
+
+    for (int i = 0; i < temperaturesSize; i++) {
+        // While current temperature is greater than temp at stack top
+        while (top >= 0 && temperatures[i] > temperatures[stack[top]]) {
+            int prevIndex = stack[top--];
+            answer[prevIndex] = i - prevIndex;
+        }
+
+        // Push current index onto stack
+        stack[++top] = i;
+    }
+
+    free(stack);
+    *returnSize = temperaturesSize;
+    return answer;
+}
+
+// Main function to test
+int main() {
+    int temperatures[] = {73, 74, 75, 71, 69, 72, 76, 73};
+    int n = sizeof(temperatures) / sizeof(temperatures[0]);
+    int returnSize;
+
+    int* result = dailyTemperatures(temperatures, n, &returnSize);
+
+    printf("Output: [");
+    for (int i = 0; i < returnSize; i++) {
+        printf("%d", result[i]);
+        if (i < returnSize - 1) printf(", ");
+    }
+    printf("]\n");
+
+    free(result);
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <string.h>
+
+// Function to find maximum of two numbers
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Function to calculate minimum intervals
+int leastInterval(char tasks[], int tasksSize, int n) {
+    int freq[26] = {0};
+
+    // Count frequency of each task
+    for (int i = 0; i < tasksSize; i++) {
+        freq[tasks[i] - 'A']++;
+    }
+
+    // Find maximum frequency
+    int maxFreq = 0;
+    for (int i = 0; i < 26; i++) {
+        if (freq[i] > maxFreq)
+            maxFreq = freq[i];
+    }
+
+    // Count how many tasks have max frequency
+    int maxCount = 0;
+    for (int i = 0; i < 26; i++) {
+        if (freq[i] == maxFreq)
+            maxCount++;
+    }
+
+    // Apply formula
+    int partCount = maxFreq - 1;
+    int partLength = n + 1;
+    int result = partCount * partLength + maxCount;
+
+    return max(tasksSize, result);
+}
+
+// Main function
+int main() {
+    char tasks[] = {'A','A','A','B','B','B'};
+    int n = 2;
+    int tasksSize = sizeof(tasks) / sizeof(tasks[0]);
+
+    printf("Minimum intervals required: %d\n", leastInterval(tasks, tasksSize, n));
+
+    return 0;
+}

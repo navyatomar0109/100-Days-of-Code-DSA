@@ -1,0 +1,38 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Recursive inorder traversal
+void inorder(struct TreeNode* root) {
+    if (root == NULL)
+        return;
+
+    inorder(root->left);
+    printf("%d ", root->val);
+    inorder(root->right);
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Recursive inorder traversal
+void inorder(struct TreeNode* root) {
+    if (root == NULL)
+        return;
+
+    inorder(root->left);
+    printf("%d ", root->val);
+    inorder(root->right);
+}

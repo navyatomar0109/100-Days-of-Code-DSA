@@ -1,0 +1,87 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for BST node
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Create a new node
+struct TreeNode* createNode(int val) {
+    struct TreeNode* newNode = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    newNode->val = val;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Insert function (for building BST)
+struct TreeNode* insert(struct TreeNode* root, int val) {
+    if (root == NULL)
+        return createNode(val);
+
+    if (val < root->val)
+        root->left = insert(root->left, val);
+    else if (val > root->val)
+        root->right = insert(root->right, val);
+
+    return root;
+}
+
+// Search in BST
+struct TreeNode* searchBST(struct TreeNode* root, int val) {
+    if (root == NULL || root->val == val)
+        return root;
+
+    if (val < root->val)
+        return searchBST(root->left, val);
+
+    return searchBST(root->right, val);
+}
+
+int main() {
+    int n, val, key;
+    struct TreeNode* root = NULL;
+
+    scanf("%d", &n);   // number of nodes
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &val);
+        root = insert(root, val);
+    }
+
+    scanf("%d", &key); // value to search
+
+    struct TreeNode* result = searchBST(root, key);
+
+    if (result != NULL)
+        printf("Found\n");
+    else
+        printf("Not Found\n");
+
+    return 0;
+}
+solve problem:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+struct TreeNode* searchBST(struct TreeNode* root, int val) {
+    if (root == NULL || root->val == val) {
+        return root;
+    }
+
+    if (val < root->val) {
+        return searchBST(root->left, val);
+    } else {
+        return searchBST(root->right, val);
+    }
+}

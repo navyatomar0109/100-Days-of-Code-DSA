@@ -1,0 +1,134 @@
+view probelm:
+#include <stdio.h>
+
+#define MAX 100
+
+int queue[MAX], front = -1, rear = -1;
+
+// Enqueue
+void enqueue(int value) {
+    if (rear == MAX - 1)
+        return;
+    if (front == -1)
+        front = 0;
+    queue[++rear] = value;
+}
+
+// Dequeue
+int dequeue() {
+    if (front == -1 || front > rear)
+        return -1;
+    return queue[front++];
+}
+
+// Check if queue is empty
+int isEmpty() {
+    return (front == -1 || front > rear);
+}
+
+// BFS function
+void BFS(int graph[MAX][MAX], int n, int source) {
+    int visited[MAX] = {0};
+
+    enqueue(source);
+    visited[source] = 1;
+
+    printf("BFS Traversal: ");
+
+    while (!isEmpty()) {
+        int current = dequeue();
+        printf("%d ", current);
+
+        for (int i = 0; i < n; i++) {
+            if (graph[current][i] == 1 && !visited[i]) {
+                enqueue(i);
+                visited[i] = 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int n, source;
+    int graph[MAX][MAX];
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter adjacency matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    printf("Enter source vertex: ");
+    scanf("%d", &source);
+
+    BFS(graph, n, source);
+
+    return 0;
+}
+solve problem:
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+
+typedef struct {
+    int x, y;
+} Pair;
+
+int orangesRotting(int** grid, int gridSize, int* gridColSize) {
+    int rows = gridSize;
+    int cols = gridColSize[0];
+    
+    Pair queue[200];
+    int front = 0, rear = 0;
+    
+    int fresh = 0;
+    int minutes = 0;
+    
+    // Step 1: Add all rotten oranges to queue, count fresh ones
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (grid[i][j] == 2) {
+                queue[rear++] = (Pair){i, j};
+            } else if (grid[i][j] == 1) {
+                fresh++;
+            }
+        }
+    }
+    
+    // If no fresh oranges
+    if (fresh == 0) return 0;
+    
+    int dir[4][2] = {{-1,0},{1,0},{0,-1},{0,1}};
+    
+    // Step 2: BFS
+    while (front < rear) {
+        int size = rear - front;
+        int rottenThisMinute = 0;
+        
+        for (int i = 0; i < size; i++) {
+            Pair current = queue[front++];
+            
+            for (int d = 0; d < 4; d++) {
+                int nx = current.x + dir[d][0];
+                int ny = current.y + dir[d][1];
+                
+                if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && grid[nx][ny] == 1) {
+                    grid[nx][ny] = 2; // Make rotten
+                    fresh--;
+                    queue[rear++] = (Pair){nx, ny};
+                    rottenThisMinute = 1;
+                }
+            }
+        }
+        
+        if (rottenThisMinute)
+            minutes++;
+    }
+    
+    // If fresh oranges still remain
+    return (fresh == 0) ? minutes : -1;
+}

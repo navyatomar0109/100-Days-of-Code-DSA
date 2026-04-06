@@ -1,0 +1,107 @@
+view problem:
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100
+
+int graph[MAX][MAX];
+bool visited[MAX];
+int V, E;
+
+// DFS function to detect cycle
+bool dfs(int node, int parent) {
+    visited[node] = true;
+
+    for (int neighbor = 0; neighbor < V; neighbor++) {
+        if (graph[node][neighbor]) {
+            if (!visited[neighbor]) {
+                if (dfs(neighbor, node))
+                    return true;
+            }
+            else if (neighbor != parent) {
+                return true; // cycle found
+            }
+        }
+    }
+    return false;
+}
+
+// Function to check cycle in all components
+bool hasCycle() {
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            if (dfs(i, -1))
+                return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    scanf("%d %d", &V, &E);
+
+    // Initialize graph and visited
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+        for (int j = 0; j < V; j++) {
+            graph[i][j] = 0;
+        }
+    }
+
+    // Input edges
+    for (int i = 0; i < E; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        graph[u][v] = 1;
+        graph[v][u] = 1; // undirected graph
+    }
+
+    if (hasCycle())
+        printf("YES\n");
+    else
+        printf("NO\n");
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+bool isMirror(struct TreeNode* leftTree, struct TreeNode* rightTree) {
+    if (leftTree == NULL && rightTree == NULL)
+        return true;
+
+    if (leftTree == NULL || rightTree == NULL)
+        return false;
+
+    return (leftTree->val == rightTree->val) &&
+           isMirror(leftTree->left, rightTree->right) &&
+           isMirror(leftTree->right, rightTree->left);
+}
+
+bool isSymmetric(struct TreeNode* root) {
+    if (root == NULL)
+        return true;
+
+    return isMirror(root->left, root->right);
+}
+
+int main() {
+    // Tree creation part depends on input format
+    // Here only logic is shown
+
+    // Example output:
+    // if (isSymmetric(root))
+    //     printf("YES\n");
+    // else
+    //     printf("NO\n");
+
+    return 0;
+}

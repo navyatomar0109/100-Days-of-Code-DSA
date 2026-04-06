@@ -1,0 +1,143 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *left, *right;
+} Node;
+
+// Create new node
+Node* createNode(int val) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = val;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+// Queue for tree construction
+typedef struct Queue {
+    Node* arr[1000];
+    int front, rear;
+} Queue;
+
+void initQueue(Queue* q) {
+    q->front = q->rear = 0;
+}
+
+int isEmpty(Queue* q) {
+    return q->front == q->rear;
+}
+
+void enqueue(Queue* q, Node* node) {
+    q->arr[q->rear++] = node;
+}
+
+Node* dequeue(Queue* q) {
+    return q->arr[q->front++];
+}
+
+// Function to check if two trees are mirror images
+int isMirror(Node* t1, Node* t2) {
+    if (t1 == NULL && t2 == NULL)
+        return 1;
+    if (t1 == NULL || t2 == NULL)
+        return 0;
+
+    return (t1->data == t2->data) &&
+           isMirror(t1->left, t2->right) &&
+           isMirror(t1->right, t2->left);
+}
+
+// Function to check if tree is symmetric
+int isSymmetric(Node* root) {
+    if (root == NULL)
+        return 1;
+    return isMirror(root->left, root->right);
+}
+
+int main() {
+    int N;
+    scanf("%d", &N);
+
+    if (N == 0) {
+        printf("YES\n");
+        return 0;
+    }
+
+    int arr[1000];
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    // If root is NULL
+    if (arr[0] == -1) {
+        printf("YES\n");
+        return 0;
+    }
+
+    Node* root = createNode(arr[0]);
+    Queue q;
+    initQueue(&q);
+    enqueue(&q, root);
+
+    int i = 1;
+
+    // Build tree from level order
+    while (i < N && !isEmpty(&q)) {
+        Node* current = dequeue(&q);
+
+        // Left child
+        if (i < N && arr[i] != -1) {
+            current->left = createNode(arr[i]);
+            enqueue(&q, current->left);
+        }
+        i++;
+
+        // Right child
+        if (i < N && arr[i] != -1) {
+            current->right = createNode(arr[i]);
+            enqueue(&q, current->right);
+        }
+        i++;
+    }
+
+    if (isSymmetric(root))
+        printf("YES\n");
+    else
+        printf("NO\n");
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Function to check if two trees are mirror images
+bool isMirror(struct TreeNode* leftTree, struct TreeNode* rightTree) {
+    if (leftTree == NULL && rightTree == NULL)
+        return true;
+
+    if (leftTree == NULL || rightTree == NULL)
+        return false;
+
+    return (leftTree->val == rightTree->val) &&
+           isMirror(leftTree->left, rightTree->right) &&
+           isMirror(leftTree->right, rightTree->left);
+}
+
+// Main function
+bool isSymmetric(struct TreeNode* root) {
+    if (root == NULL)
+        return true;
+
+    return isMirror(root->left, root->right);
+}

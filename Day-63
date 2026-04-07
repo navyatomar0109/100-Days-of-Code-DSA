@@ -1,0 +1,55 @@
+view probelm:
+# DFS using recursion
+
+def dfs(vertex, adj, visited):
+    visited[vertex] = True
+    print(vertex, end=" ")
+
+    for neighbor in adj[vertex]:
+        if not visited[neighbor]:
+            dfs(neighbor, adj, visited)
+
+
+# Input
+n = int(input("Enter number of vertices: "))
+
+adj = [[] for _ in range(n)]
+
+print("Enter adjacency list for each vertex:")
+for i in range(n):
+    neighbors = list(map(int, input(f"Vertex {i}: ").split()))
+    adj[i] = neighbors
+
+s = int(input("Enter starting vertex: "))
+
+# Visited array
+visited = [False] * n
+
+print("DFS Traversal:")
+dfs(s, adj, visited)
+solve problem:
+class Solution:
+    def floodFill(self, image, sr, sc, color):
+        rows = len(image)
+        cols = len(image[0])
+        original = image[sr][sc]
+
+        if original == color:
+            return image
+
+        def dfs(r, c):
+            if r < 0 or r >= rows or c < 0 or c >= cols:
+                return
+            
+            if image[r][c] != original:
+                return
+            
+            image[r][c] = color
+
+            dfs(r - 1, c)
+            dfs(r + 1, c)
+            dfs(r, c - 1)
+            dfs(r, c + 1)
+
+        dfs(sr, sc)
+        return image

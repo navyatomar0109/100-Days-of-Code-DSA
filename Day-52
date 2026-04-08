@@ -1,0 +1,118 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Queue implementation for BFS
+struct Queue {
+    struct TreeNode **arr;
+    int front, rear, size, capacity;
+};
+
+struct Queue* createQueue(int capacity) {
+    struct Queue *q = (struct Queue*)malloc(sizeof(struct Queue));
+    q->arr = (struct TreeNode**)malloc(sizeof(struct TreeNode*) * capacity);
+    q->front = 0;
+    q->rear = -1;
+    q->size = 0;
+    q->capacity = capacity;
+    return q;
+}
+
+bool isEmpty(struct Queue *q) {
+    return q->size == 0;
+}
+
+void enqueue(struct Queue *q, struct TreeNode *node) {
+    q->rear = (q->rear + 1) % q->capacity;
+    q->arr[q->rear] = node;
+    q->size++;
+}
+
+struct TreeNode* dequeue(struct Queue *q) {
+    struct TreeNode *node = q->arr[q->front];
+    q->front = (q->front + 1) % q->capacity;
+    q->size--;
+    return node;
+}
+
+/**
+ * Return an array of arrays of size *returnSize.
+ * The sizes of the arrays are returned as *returnColumnSizes.
+ * Note: Both returned array and *returnColumnSizes must be malloced.
+ */
+int** zigzagLevelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes) {
+    *returnSize = 0;
+    
+    if (root == NULL) {
+        *returnColumnSizes = NULL;
+        return NULL;
+    }
+    
+    int **result = (int**)malloc(sizeof(int*) * 2000);
+    *returnColumnSizes = (int*)malloc(sizeof(int) * 2000);
+    
+    struct Queue *q = createQueue(2000);
+    enqueue(q, root);
+    
+    bool leftToRight = true;
+    
+    while (!isEmpty(q)) {
+        int levelSize = q->size;
+        int *level = (int*)malloc(sizeof(int) * levelSize);
+        
+        for (int i = 0; i < levelSize; i++) {
+            struct TreeNode *node = dequeue(q);
+            
+            int index = leftToRight ? i : (levelSize - 1 - i);
+            level[index] = node->val;
+            
+            if (node->left) enqueue(q, node->left);
+            if (node->right) enqueue(q, node->right);
+        }
+        
+        result[*returnSize] = level;
+        (*returnColumnSizes)[*returnSize] = levelSize;
+        (*returnSize)++;
+        
+        leftToRight = !leftToRight;
+    }
+    
+    return result;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+struct TreeNode* lowestCommonAncestor(struct TreeNode* root, struct TreeNode* p, struct TreeNode* q) {
+    // Base case
+    if (root == NULL || root == p || root == q) {
+        return root;
+    }
+
+    // Search left and right subtree
+    struct TreeNode* left = lowestCommonAncestor(root->left, p, q);
+    struct TreeNode* right = lowestCommonAncestor(root->right, p, q);
+
+    // If both sides return non-NULL, current node is LCA
+    if (left != NULL && right != NULL) {
+        return root;
+    }
+
+    // Otherwise return the non-NULL side
+    return (left != NULL) ? left : right;
+}

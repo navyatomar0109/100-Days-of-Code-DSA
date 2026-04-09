@@ -1,0 +1,166 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 1000
+
+// Tree Node structure
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Queue element stores node + horizontal distance
+struct QNode {
+    struct Node* node;
+    int hd;
+};
+
+// Function to create a new tree node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+// Build tree from level order input (-1 means NULL)
+struct Node* buildTree(int arr[], int n) {
+    if (n == 0 || arr[0] == -1)
+        return NULL;
+
+    struct Node* root = createNode(arr[0]);
+    struct Node* queue[MAX];
+    int front = 0, rear = 0;
+    queue[rear++] = root;
+
+    int i = 1;
+    while (i < n && front < rear) {
+        struct Node* current = queue[front++];
+
+        // Left child
+        if (i < n && arr[i] != -1) {
+            current->left = createNode(arr[i]);
+            queue[rear++] = current->left;
+        }
+        i++;
+
+        // Right child
+        if (i < n && arr[i] != -1) {
+            current->right = createNode(arr[i]);
+            queue[rear++] = current->right;
+        }
+        i++;
+    }
+
+    return root;
+}
+
+// Function for vertical order traversal
+void verticalOrder(struct Node* root) {
+    if (root == NULL)
+        return;
+
+    // Store nodes by horizontal distance
+    int vertical[MAX][MAX];   // vertical[hd_index][nodes]
+    int count[MAX] = {0};     // number of nodes in each HD
+    int offset = MAX / 2;     // to handle negative HD
+
+    struct QNode queue[MAX];
+    int front = 0, rear = 0;
+
+    queue[rear++] = (struct QNode){root, 0};
+
+    while (front < rear) {
+        struct QNode temp = queue[front++];
+        struct Node* current = temp.node;
+        int hd = temp.hd + offset;
+
+        vertical[hd][count[hd]++] = current->data;
+
+        if (current->left)
+            queue[rear++] = (struct QNode){current->left, temp.hd - 1};
+
+        if (current->right)
+            queue[rear++] = (struct QNode){current->right, temp.hd + 1};
+    }
+
+    // Print from leftmost vertical line to rightmost
+    for (int i = 0; i < MAX; i++) {
+        if (count[i] > 0) {
+            for (int j = 0; j < count[i]; j++) {
+                printf("%d ", vertical[i][j]);
+            }
+            printf("\n");
+        }
+    }
+}
+
+// Main function
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    struct Node* root = buildTree(arr, n);
+    verticalOrder(root);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+int** levelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes) {
+    // If tree is empty
+    if (root == NULL) {
+        *returnSize = 0;
+        *returnColumnSizes = NULL;
+        return NULL;
+    }
+
+    // Queue for BFS
+    struct TreeNode* queue[2000];
+    int front = 0, rear = 0;
+
+    queue[rear++] = root;
+
+    // Result array
+    int** result = (int**)malloc(2000 * sizeof(int*));
+    *returnColumnSizes = (int*)malloc(2000 * sizeof(int));
+    *returnSize = 0;
+
+    while (front < rear) {
+        int levelSize = rear - front;   // nodes in current level
+        result[*returnSize] = (int*)malloc(levelSize * sizeof(int));
+        (*returnColumnSizes)[*returnSize] = levelSize;
+
+        for (int i = 0; i < levelSize; i++) {
+            struct TreeNode* current = queue[front++];
+            result[*returnSize][i] = current->val;
+
+            if (current->left != NULL) {
+                queue[rear++] = current->left;
+            }
+            if (current->right != NULL) {
+                queue[rear++] = current->right;
+            }
+        }
+
+        (*returnSize)++;
+    }
+
+    return result;
+}

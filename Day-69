@@ -1,0 +1,270 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX 100
+
+// Structure for priority queue node
+typedef struct {
+    int vertex;
+    int distance;
+} Node;
+
+// Min Heap
+Node heap[MAX];
+int size = 0;
+
+// Swap two nodes
+void swap(Node *a, Node *b) {
+    Node temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Heapify up
+void heapifyUp(int i) {
+    while (i > 0 && heap[(i - 1) / 2].distance > heap[i].distance) {
+        swap(&heap[i], &heap[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+// Heapify down
+void heapifyDown(int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < size && heap[left].distance < heap[smallest].distance)
+        smallest = left;
+
+    if (right < size && heap[right].distance < heap[smallest].distance)
+        smallest = right;
+
+    if (smallest != i) {
+        swap(&heap[i], &heap[smallest]);
+        heapifyDown(smallest);
+    }
+}
+
+// Insert into heap
+void push(int vertex, int distance) {
+    heap[size].vertex = vertex;
+    heap[size].distance = distance;
+    heapifyUp(size);
+    size++;
+}
+
+// Remove min element
+Node pop() {
+    Node root = heap[0];
+    heap[0] = heap[--size];
+    heapifyDown(0);
+    return root;
+}
+
+int isEmpty() {
+    return size == 0;
+}
+
+// Dijkstra function
+void dijkstra(int graph[MAX][MAX], int n, int src) {
+    int dist[MAX];
+    int visited[MAX] = {0};
+
+    // Initialize distances
+    for (int i = 0; i < n; i++) {
+        dist[i] = INT_MAX;
+    }
+
+    dist[src] = 0;
+    push(src, 0);
+
+    while (!isEmpty()) {
+        Node node = pop();
+        int u = node.vertex;
+
+        if (visited[u]) continue;
+        visited[u] = 1;
+
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] != 0 && !visited[v]) {
+                int newDist = dist[u] + graph[u][v];
+
+                if (newDist < dist[v]) {
+                    dist[v] = newDist;
+                    push(v, newDist);
+                }
+            }
+        }
+    }
+
+    // Print result
+    printf("Shortest distances from source %d:\n", src);
+    for (int i = 0; i < n; i++) {
+        printf("To %d = %d\n", i, dist[i]);
+    }
+}
+
+// Driver code
+int main() {
+    int n;
+    int graph[MAX][MAX];
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter adjacency matrix (0 if no edge):\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    int src;
+    printf("Enter source vertex: ");
+    scanf("%d", &src);
+
+    dijkstra(graph, n, src);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX 105
+
+// Min Heap Node
+typedef struct {
+    int vertex;
+    int dist;
+} Node;
+
+Node heap[10000];
+int size = 0;
+
+// Swap
+void swap(Node *a, Node *b) {
+    Node temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Heapify Up
+void heapifyUp(int i) {
+    while (i > 0 && heap[(i - 1) / 2].dist > heap[i].dist) {
+        swap(&heap[i], &heap[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+// Heapify Down
+void heapifyDown(int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < size && heap[left].dist < heap[smallest].dist)
+        smallest = left;
+
+    if (right < size && heap[right].dist < heap[smallest].dist)
+        smallest = right;
+
+    if (smallest != i) {
+        swap(&heap[i], &heap[smallest]);
+        heapifyDown(smallest);
+    }
+}
+
+// Push
+void push(int v, int d) {
+    heap[size].vertex = v;
+    heap[size].dist = d;
+    heapifyUp(size);
+    size++;
+}
+
+// Pop
+Node pop() {
+    Node root = heap[0];
+    heap[0] = heap[--size];
+    heapifyDown(0);
+    return root;
+}
+
+int isEmpty() {
+    return size == 0;
+}
+
+// Dijkstra
+int networkDelayTime(int times[][3], int timesSize, int n, int k) {
+    int graph[MAX][MAX] = {0};
+
+    // Build graph
+    for (int i = 0; i < timesSize; i++) {
+        int u = times[i][0];
+        int v = times[i][1];
+        int w = times[i][2];
+        graph[u][v] = w;
+    }
+
+    int dist[MAX];
+    int visited[MAX] = {0};
+
+    // Initialize distances
+    for (int i = 1; i <= n; i++) {
+        dist[i] = INT_MAX;
+    }
+
+    dist[k] = 0;
+    push(k, 0);
+
+    while (!isEmpty()) {
+        Node node = pop();
+        int u = node.vertex;
+
+        if (visited[u]) continue;
+        visited[u] = 1;
+
+        for (int v = 1; v <= n; v++) {
+            if (graph[u][v] != 0 && !visited[v]) {
+                int newDist = dist[u] + graph[u][v];
+
+                if (newDist < dist[v]) {
+                    dist[v] = newDist;
+                    push(v, newDist);
+                }
+            }
+        }
+    }
+
+    // Find maximum distance
+    int maxTime = 0;
+    for (int i = 1; i <= n; i++) {
+        if (dist[i] == INT_MAX) {
+            return -1; // unreachable
+        }
+        if (dist[i] > maxTime) {
+            maxTime = dist[i];
+        }
+    }
+
+    return maxTime;
+}
+
+// Driver
+int main() {
+    int times[][3] = {{2,1,1},{2,3,1},{3,4,1}};
+    int timesSize = 3;
+    int n = 4;
+    int k = 2;
+
+    int result = networkDelayTime(times, timesSize, n, k);
+
+    printf("Output: %d\n", result);
+
+    return 0;
+}

@@ -1,0 +1,88 @@
+view problem:
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char s[1000];
+    int freq[26] = {0};  // For lowercase letters
+
+    // Input
+    scanf("%s", s);
+
+    // Step 1: Count frequency
+    for(int i = 0; s[i] != '\0'; i++) {
+        freq[s[i] - 'a']++;
+    }
+
+    // Step 2: Find first non-repeating character
+    for(int i = 0; s[i] != '\0'; i++) {
+        if(freq[s[i] - 'a'] == 1) {
+            printf("%c", s[i]);
+            return 0;
+        }
+    }
+
+    // If all characters repeat
+    printf("$");
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+
+#define MAX 1001
+
+int parent[MAX];
+
+// Find with path compression
+int find(int x) {
+    if (parent[x] != x)
+        parent[x] = find(parent[x]);
+    return parent[x];
+}
+
+// Union function
+int unionSet(int a, int b) {
+    int pa = find(a);
+    int pb = find(b);
+
+    if (pa == pb)
+        return 0; // cycle detected
+
+    parent[pa] = pb;
+    return 1;
+}
+
+int main() {
+    int n;
+
+    // Input number of edges (same as nodes)
+    scanf("%d", &n);
+
+    int edges[n][2];
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d %d", &edges[i][0], &edges[i][1]);
+    }
+
+    // Initialize parent
+    for (int i = 1; i <= n; i++) {
+        parent[i] = i;
+    }
+
+    int resA = -1, resB = -1;
+
+    // Process edges
+    for (int i = 0; i < n; i++) {
+        if (!unionSet(edges[i][0], edges[i][1])) {
+            // cycle edge
+            resA = edges[i][0];
+            resB = edges[i][1];
+        }
+    }
+
+    // Output result
+    printf("%d %d\n", resA, resB);
+
+    return 0;
+}

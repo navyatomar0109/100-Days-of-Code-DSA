@@ -1,0 +1,118 @@
+view problem:
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 1000
+#define LEN 100
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    char votes[MAX][LEN];
+    
+    // Input votes
+    for(int i = 0; i < n; i++) {
+        scanf("%s", votes[i]);
+    }
+
+    // Arrays to store unique names and counts
+    char names[MAX][LEN];
+    int count[MAX] = {0};
+    int unique = 0;
+
+    // Count votes
+    for(int i = 0; i < n; i++) {
+        int found = 0;
+
+        for(int j = 0; j < unique; j++) {
+            if(strcmp(votes[i], names[j]) == 0) {
+                count[j]++;
+                found = 1;
+                break;
+            }
+        }
+
+        if(!found) {
+            strcpy(names[unique], votes[i]);
+            count[unique] = 1;
+            unique++;
+        }
+    }
+
+    // Find winner
+    int maxVotes = 0;
+    char winner[LEN];
+
+    for(int i = 0; i < unique; i++) {
+        if(count[i] > maxVotes) {
+            maxVotes = count[i];
+            strcpy(winner, names[i]);
+        }
+        else if(count[i] == maxVotes) {
+            // Lexicographically smaller check
+            if(strcmp(names[i], winner) < 0) {
+                strcpy(winner, names[i]);
+            }
+        }
+    }
+
+    // Output
+    printf("%s %d\n", winner, maxVotes);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+
+#define MAX 200
+
+int visited[MAX];
+
+// DFS function
+void dfs(int city, int n, int isConnected[MAX][MAX]) {
+    visited[city] = 1;
+
+    for(int j = 0; j < n; j++) {
+        if(isConnected[city][j] == 1 && !visited[j]) {
+            dfs(j, n, isConnected);
+        }
+    }
+}
+
+int findCircleNum(int isConnected[MAX][MAX], int n) {
+    int provinces = 0;
+
+    // Initialize visited array
+    for(int i = 0; i < n; i++) {
+        visited[i] = 0;
+    }
+
+    for(int i = 0; i < n; i++) {
+        if(!visited[i]) {
+            dfs(i, n, isConnected);
+            provinces++;  // new province found
+        }
+    }
+
+    return provinces;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int isConnected[MAX][MAX];
+
+    // Input matrix
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            scanf("%d", &isConnected[i][j]);
+        }
+    }
+
+    int result = findCircleNum(isConnected, n);
+    printf("%d\n", result);
+
+    return 0;
+}

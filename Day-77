@@ -1,0 +1,142 @@
+view problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+int adj[MAX][MAX];   // Adjacency matrix
+int visited[MAX];
+int n, m;
+
+// DFS function
+void dfs(int node) {
+    visited[node] = 1;
+    for(int i = 1; i <= n; i++) {
+        if(adj[node][i] == 1 && !visited[i]) {
+            dfs(i);
+        }
+    }
+}
+
+int main() {
+    int u, v;
+
+    scanf("%d %d", &n, &m);
+
+    // Initialize adjacency matrix and visited array
+    for(int i = 1; i <= n; i++) {
+        visited[i] = 0;
+        for(int j = 1; j <= n; j++) {
+            adj[i][j] = 0;
+        }
+    }
+
+    // Input edges
+    for(int i = 0; i < m; i++) {
+        scanf("%d %d", &u, &v);
+        adj[u][v] = 1;
+        adj[v][u] = 1;  // undirected graph
+    }
+
+    // Start DFS from node 1
+    dfs(1);
+
+    // Check if all nodes are visited
+    for(int i = 1; i <= n; i++) {
+        if(!visited[i]) {
+            printf("NOT CONNECTED\n");
+            return 0;
+        }
+    }
+
+    printf("CONNECTED\n");
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100005
+
+// Adjacency list
+int *adj[MAX];
+int size[MAX];
+
+// Arrays
+int disc[MAX], low[MAX], visited[MAX];
+int timeCounter = 0;
+
+// To store result
+int result[MAX][2];
+int resSize = 0;
+
+// Add edge
+void addEdge(int u, int v) {
+    adj[u] = realloc(adj[u], (size[u] + 1) * sizeof(int));
+    adj[u][size[u]++] = v;
+
+    adj[v] = realloc(adj[v], (size[v] + 1) * sizeof(int));
+    adj[v][size[v]++] = u;
+}
+
+// DFS function
+void dfs(int u, int parent) {
+    visited[u] = 1;
+    disc[u] = low[u] = ++timeCounter;
+
+    for(int i = 0; i < size[u]; i++) {
+        int v = adj[u][i];
+
+        if(v == parent) continue;
+
+        if(!visited[v]) {
+            dfs(v, u);
+
+            // update low value
+            if(low[v] < low[u])
+                low[u] = low[v];
+
+            // check for bridge
+            if(low[v] > disc[u]) {
+                result[resSize][0] = u;
+                result[resSize][1] = v;
+                resSize++;
+            }
+        } else {
+            // back edge
+            if(disc[v] < low[u])
+                low[u] = disc[v];
+        }
+    }
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    // Initialize
+    for(int i = 0; i < n; i++) {
+        adj[i] = NULL;
+        size[i] = 0;
+        visited[i] = 0;
+    }
+
+    int u, v;
+
+    // Input edges
+    for(int i = 0; i < m; i++) {
+        scanf("%d %d", &u, &v);
+        addEdge(u, v);
+    }
+
+    // Run DFS from node 0
+    dfs(0, -1);
+
+    // Print result
+    for(int i = 0; i < resSize; i++) {
+        printf("[%d, %d]\n", result[i][0], result[i][1]);
+    }
+
+    return 0;
+}

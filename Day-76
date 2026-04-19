@@ -1,0 +1,104 @@
+view problem:
+#include <stdio.h>
+
+#define MAX 100
+
+int adj[MAX][MAX];   // Adjacency matrix
+int visited[MAX];    // Visited array
+int n;
+
+// DFS function
+void dfs(int node) {
+    visited[node] = 1;
+    
+    for(int i = 1; i <= n; i++) {
+        if(adj[node][i] == 1 && !visited[i]) {
+            dfs(i);
+        }
+    }
+}
+
+int main() {
+    int m;
+    scanf("%d %d", &n, &m);
+
+    // Initialize adjacency matrix and visited array
+    for(int i = 1; i <= n; i++) {
+        visited[i] = 0;
+        for(int j = 1; j <= n; j++) {
+            adj[i][j] = 0;
+        }
+    }
+
+    // Input edges
+    for(int i = 0; i < m; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        adj[u][v] = 1;
+        adj[v][u] = 1; // Undirected graph
+    }
+
+    int components = 0;
+
+    // Count connected components
+    for(int i = 1; i <= n; i++) {
+        if(!visited[i]) {
+            dfs(i);
+            components++;
+        }
+    }
+
+    printf("%d\n", components);
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 101
+
+// Definition of Node
+struct Node {
+    int val;
+    int numNeighbors;
+    struct Node** neighbors;
+};
+
+// Map to store visited nodes (index = node value)
+struct Node* visited[MAX];
+
+// Function to create a new node
+struct Node* createNode(int val) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->val = val;
+    node->numNeighbors = 0;
+    node->neighbors = NULL;
+    return node;
+}
+
+// DFS clone function
+struct Node* cloneGraph(struct Node* node) {
+    if (node == NULL)
+        return NULL;
+
+    // If already cloned
+    if (visited[node->val] != NULL)
+        return visited[node->val];
+
+    // Create clone
+    struct Node* clone = createNode(node->val);
+    visited[node->val] = clone;
+
+    clone->numNeighbors = node->numNeighbors;
+    clone->neighbors = (struct Node**)malloc(
+        node->numNeighbors * sizeof(struct Node*)
+    );
+
+    // Clone neighbors recursively
+    for (int i = 0; i < node->numNeighbors; i++) {
+        clone->neighbors[i] = cloneGraph(node->neighbors[i]);
+    }
+
+    return clone;
+}

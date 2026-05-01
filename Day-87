@@ -1,0 +1,71 @@
+view problem:
+#include <stdio.h>
+
+int integerSqrt(int n) {
+    if (n < 2)
+        return n;
+
+    int left = 0, right = n, ans = 0;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        // To avoid overflow, use division instead of mid*mid
+        if (mid == n / mid) {
+            return mid;
+        } else if (mid < n / mid) {
+            ans = mid;          // possible answer
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    printf("%d\n", integerSqrt(n));
+
+    return 0;
+}
+solve problem:
+#include <stdio.h>
+
+int mySqrt(int x) {
+    if (x < 2)
+        return x;
+
+    int left = 1, right = x / 2;
+    int ans = 0;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        // Avoid overflow: use division instead of mid * mid
+        if (mid == x / mid) {
+            return mid;
+        } 
+        else if (mid < x / mid) {
+            ans = mid;        // store possible answer
+            left = mid + 1;
+        } 
+        else {
+            right = mid - 1;
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    int x;
+    scanf("%d", &x);
+
+    printf("%d\n", mySqrt(x));
+
+    return 0;
+}
